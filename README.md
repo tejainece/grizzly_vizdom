@@ -1,4 +1,4 @@
-# VizDOM (pronounced as Wisdom)
+# VizDOM
 
 Fluent data driven documents based selection and data-join API for HTML DOM
 
