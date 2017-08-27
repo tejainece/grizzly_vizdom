@@ -3,7 +3,7 @@
 
 import 'dart:collection';
 import 'dart:html' hide Selection;
-import 'package:vizzie_dom/vizzie_dom.dart';
+import 'package:grizzly_vizdom/grizzly_vizdom.dart';
 
 void main() {
   select('#root')

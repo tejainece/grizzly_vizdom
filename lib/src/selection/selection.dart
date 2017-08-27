@@ -1,10 +1,10 @@
 library grizzly.vizdom.selection;
 
 import 'dart:html';
-import 'dart:svg';
 import 'dart:collection';
 
 import '../namespace/namespace.dart';
+import '../transition/transition.dart';
 
 part 'binding.dart';
 part 'bound.dart';
@@ -17,6 +17,9 @@ abstract class Selected {
 
   /// Parents of each group in selection
   UnmodifiableListView<Element> get parents;
+
+  /// All non-null elements in selection
+  UnmodifiableListView<Element> get allElements;
 
   /// Sets a constant attribute with name [name], value [value] to all elements
   /// in the selection
@@ -76,6 +79,8 @@ abstract class Selected {
   Selected order();
 
   //TODO Selected replace();  //TODO: must take a function
+
+  //TODO Transition transition(String name);
 }
 
 abstract class Bindable {

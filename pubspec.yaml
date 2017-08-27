@@ -1,4 +1,4 @@
-name: vizzie_dom
+name: grizzly_vizdom
 description: Fluent data driven documents based selection and data-join API for HTML DOM
 version: 0.0.2-dev
 homepage: http://grizzly-dart.github.io
@@ -9,6 +9,7 @@ environment:
   sdk: '>=1.20.1 <2.0.0'
 
 dependencies:
+  animation_builder: ^0.0.5
 
 dev_dependencies:
   browser: ^0.10.0

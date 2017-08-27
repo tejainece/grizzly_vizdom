@@ -3,17 +3,15 @@ part of grizzly.vizdom.selection;
 Element _createElement(String tag) {
   final Namespaced name = Namespaced.parse(tag);
 
-  if(!name.hasSpace) return new Element.tag(tag);
+  if (!name.hasSpace) return new Element.tag(tag);
 
   return document.createElementNS(name.space, name.local);
 }
 
 abstract class SelectedMixin implements Selected {
-  UnmodifiableListView<Element> get allElements;
-
   Selected attr(String name, String value) {
     final Namespaced attrName = Namespaced.parse(name);
-    allElements.where((e) => e != null).forEach((Element e) {
+    allElements.forEach((Element e) {
       if (attrName.hasSpace)
         e.setAttributeNS(attrName.space, attrName.local, value);
       else
@@ -28,49 +26,42 @@ abstract class SelectedMixin implements Selected {
       final Namespaced attrName = Namespaced.parse(n);
       attrSpaces[n] = attrName;
     });
-    allElements.where((e) => e != null).forEach((Element e) => attrMap
-        .forEach((String name, String value) {
-      final Namespaced attrName = attrSpaces[name];
-      if (attrName.hasSpace)
-        e.setAttributeNS(attrName.space, attrName.local, value);
-      else
-        e.setAttribute(attrName.local, value);
-    }));
+    allElements
+        .forEach((Element e) => attrMap.forEach((String name, String value) {
+              final Namespaced attrName = attrSpaces[name];
+              if (attrName.hasSpace)
+                e.setAttributeNS(attrName.space, attrName.local, value);
+              else
+                e.setAttribute(attrName.local, value);
+            }));
     return this;
   }
 
   Selected style(String name, String value, [String priority]) {
     allElements
-        .where((e) => e != null)
         .forEach((Element e) => e.style.setProperty(name, value, priority));
     return this;
   }
 
   Selected styles(Map<String, String> styles, [String priority]) {
-    allElements.where((e) => e != null).forEach((Element e) => styles.forEach(
+    allElements.forEach((Element e) => styles.forEach(
         (String name, String value) =>
             e.style.setProperty(name, value, priority)));
     return this;
   }
 
   Selected classes(List<String> classes) {
-    allElements
-        .where((e) => e != null)
-        .forEach((Element e) => e.classes.addAll(classes));
+    allElements.forEach((Element e) => e.classes.addAll(classes));
     return this;
   }
 
   Selected clazz(String clazz) {
-    allElements
-        .where((e) => e != null)
-        .forEach((Element e) => e.classes.add(clazz));
+    allElements.forEach((Element e) => e.classes.add(clazz));
     return this;
   }
 
   Selected text(textContent) {
-    allElements
-        .where((e) => e != null)
-        .forEach((Element e) => e.text = textContent.toString());
+    allElements.forEach((Element e) => e.text = textContent.toString());
     return this;
   }
 
@@ -106,7 +97,8 @@ class Selection extends Object with SelectedMixin implements Selected {
         parents = _makeImmutableLevel1<Element>(parents),
         allElements = new UnmodifiableListView(groups.fold<List<Element>>(
             <Element>[],
-            (List<Element> list, List<Element> g) => list..addAll(g)));
+            (List<Element> list, List<Element> g) =>
+                list..addAll(g.where((el) => el != null))));
 
   Selection._groups(List<List<Element>> groups, this.parents)
       : groups = new UnmodifiableListView<UnmodifiableListView<Element>>(groups
@@ -114,7 +106,8 @@ class Selection extends Object with SelectedMixin implements Selected {
             .toList()),
         allElements = new UnmodifiableListView(groups.fold<List<Element>>(
             <Element>[],
-            (List<Element> list, List<Element> g) => list..addAll(g)));
+            (List<Element> list, List<Element> g) =>
+                list..addAll(g.where((el) => el != null))));
 
   /// Sets a constant attribute with name [name], value [value] to all elements
   /// in the selection
@@ -178,7 +171,7 @@ class Selection extends Object with SelectedMixin implements Selected {
     return new Selection._groups(newGroup, this.parents);
   }
 
-  BindableSelected selectAll(String select) {
+  BindableSelection selectAll(String select) {
     final newGroup = <List<Element>>[];
     final newParents = <Element>[];
 
@@ -229,9 +222,11 @@ class Selection extends Object with SelectedMixin implements Selected {
   }
 
   Selection remove() {
-    allElements.where((e) => e != null).forEach((Element e) => e.remove());
+    allElements.forEach((Element e) => e.remove());
     return this;
   }
 
   Selection order() => super.order();
+
+  Transition transition(String name) => new Transition(this, name);
 }

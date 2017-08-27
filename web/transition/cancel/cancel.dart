@@ -1,18 +1,10 @@
-# VizDOM
+// Copyright (c) 2017, teja. All rights reserved. Use of this source code
+// is governed by a BSD-style license that can be found in the LICENSE file.
 
-Fluent data driven documents based selection and data-join API for HTML DOM
+import 'dart:html' hide Selection;
+import 'package:grizzly_vizdom/grizzly_vizdom.dart';
+import 'package:animation_builder/animation_builder.dart';
 
-# Examples
-
-## Selection
-
-TBD
-
-## Transition
-
-### Control
-
-```dart
 void main() {
   final anim = new AnimationBuilder().duration(120000).fillForwards()
     ..createAt(0.0).translateX(0)
@@ -51,31 +43,3 @@ void main() {
     select('#root').selectAll('div').transition('anim1').play();
   });
 }
-```
-
-# TODO
-
-## Selection
-
-- [ ] Bound data must be separate for each group
-- [ ] insertBound in `BoundSelection`
-- [ ] Lower
-- [ ] Raise
-- [ ] forEach
-- [ ] filter
-- [ ] size
-- [ ] non-null size
-- [ ] Events
-
-## Transition
-
-- [ ] Cancel
-- [ ] active
-- [ ] onFinish
-- [ ] chain
-
-## SVG
-
-- [ ] svg
-- [ ] Line
-- [ ] Group

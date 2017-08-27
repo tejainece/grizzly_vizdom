@@ -2,7 +2,7 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'dart:html' hide Selection;
-import 'package:vizzie_dom/vizzie_dom.dart';
+import 'package:grizzly_vizdom/grizzly_vizdom.dart';
 
 void main() {
   selectedTest();

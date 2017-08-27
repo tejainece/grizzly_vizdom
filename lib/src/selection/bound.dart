@@ -43,7 +43,8 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
       this.groups, this.parents, this.data, this.labels, this.binding)
       : allElements = new UnmodifiableListView(groups.fold<List<Element>>(
             <Element>[],
-            (List<Element> list, List<Element> g) => list..addAll(g)));
+            (List<Element> list, List<Element> g) =>
+                list..addAll(g.where((el) => el != null))));
 
   /// Sets a constant attribute with name [name], value [value] to all elements
   /// in the selection
@@ -119,7 +120,8 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
         final Element el = group[j];
         if (el == null) continue;
         attrBindings.forEach((String name, BoundStringFunc<VT> value) {
-          final String v = value(new BoundElement<VT>(el, data[j], labels[j], j));
+          final String v =
+              value(new BoundElement<VT>(el, data[j], labels[j], j));
           final Namespaced attrName = attrSpaces[name];
           if (attrName.hasSpace)
             el.setAttributeNS(attrName.space, attrName.local, v);
@@ -302,7 +304,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
   }
 
   BoundSelection<VT> remove() {
-    allElements.where((e) => e != null).forEach((Element e) => e.remove());
+    allElements.forEach((Element e) => e.remove());
     return this;
   }
 
