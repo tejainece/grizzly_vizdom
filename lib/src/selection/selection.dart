@@ -109,7 +109,7 @@ class BindableSelection extends Selection implements BindableSelected {
       parents, map.values.toList(), new LinkedHashSet.from(map.keys.toList()));
 }
 
-typedef BoundStringFunc<VT> = String Function(BoundElement<VT> b);
+typedef BoundStringFunc<VT> = String Function(BoundItem<VT> b);
 
 class Datum<VT> {
   final VT data;

@@ -230,3 +230,15 @@ class Selection extends Object with SelectedMixin implements Selected {
 
   Transition transition(String name) => new Transition(this, name);
 }
+
+class SelectionItem {
+  final int index;
+
+  final int groupIndex;
+
+  final Element rootParent;
+
+  final Element element;
+
+  SelectionItem(this.index, this.groupIndex, this.rootParent, this.element);
+}

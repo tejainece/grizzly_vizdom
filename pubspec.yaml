@@ -1,6 +1,6 @@
 name: grizzly_vizdom
 description: Fluent data driven documents based selection and data-join API for HTML DOM
-version: 0.0.2-dev
+version: 0.0.3-dev
 homepage: http://grizzly-dart.github.io
 author: Ravi Teja Gudapati <tejainece@gmail.com>
 documentation:

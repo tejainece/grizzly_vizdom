@@ -17,7 +17,7 @@ void main() {
     'display': 'inline-block',
     'padding': '5px',
     'background-color': '#E6E6E6',
-  }).textBound((BoundElement<int> b) => b.data);
+  }).textBound((BoundItem<int> b) => b.data);
 
   select('#root').selectAll('div').bindMap<int>(
       new LinkedHashMap<String, int>.fromIterable([10, 20, 40, 50, 70, 80, 100],
@@ -30,6 +30,6 @@ void main() {
       'padding': '5px',
       'background-color': '#E6E6E6',
     })
-    ..merge().textBound((BoundElement<int> b) => b.data)
+    ..merge().textBound((BoundItem<int> b) => b.data)
     .order();
 }

@@ -32,5 +32,5 @@ void bindingTest() {
     'border': '1px solid black',
     'margin': '2px 0px',
     'box-sizing': 'border-box'
-  }).styleBound('width', (BoundElement<int> b) => '${b.data}px');
+  }).styleBound('width', (BoundItem<int> b) => '${b.data}px');
 }

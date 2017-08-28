@@ -69,9 +69,7 @@ void main() {
 
 ## Transition
 
-- [ ] Cancel
 - [ ] active
-- [ ] onFinish
 - [ ] chain
 
 ## SVG

@@ -14,7 +14,10 @@ void main() {
       .selectAll('div')
       .style('background-color', 'red')
       .transition('anim1')
-      .animateWithBuilder(anim);
+      .animateWithBuilder(anim)
+      .onFinally((SelectionItem item) {
+    print(item.index);
+  });
 
   querySelector('#btn-cancel').onClick.listen((_) {
     select('#root').selectAll('div').transition('anim1').cancel();
@@ -24,7 +27,10 @@ void main() {
     select('#root')
         .selectAll('div')
         .transition('anim1')
-        .animateWithBuilder(anim);
+        .animateWithBuilder(anim)
+        .onFinally((SelectionItem item) {
+      print(item.index);
+    });
   });
 
   querySelector('#btn-reverse').onClick.listen((_) {

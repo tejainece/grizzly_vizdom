@@ -3,7 +3,7 @@ part of grizzly.vizdom.selection;
 /// Encapsulates an bound item in [BoundSelection]
 ///
 /// Usually used passed as parameters to bound methods in [BoundSelection]
-class BoundElement<VT> {
+class BoundItem<VT> {
   /// [Element] of the bound item
   final Element element;
 
@@ -16,7 +16,7 @@ class BoundElement<VT> {
   /// Index of the item in the group
   final int index;
 
-  BoundElement(this.element, this.data, this.label, this.index);
+  BoundItem(this.element, this.data, this.label, this.index);
 }
 
 /// A [Selected] that has data bound to it
@@ -90,7 +90,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
 
   BoundSelection<VT> text(textContent) => super.text(textContent);
 
-  BoundSelection<VT> attrBound(String name, String value(BoundElement<VT> b)) {
+  BoundSelection<VT> attrBound(String name, String value(BoundItem<VT> b)) {
     final Namespaced attrName = Namespaced.parse(name);
 
     for (int i = 0; i < groups.length; i++) {
@@ -98,7 +98,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
         if (el == null) continue;
-        final String v = value(new BoundElement<VT>(el, data[j], labels[j], j));
+        final String v = value(new BoundItem<VT>(el, data[j], labels[j], j));
         if (attrName.hasSpace)
           el.setAttributeNS(attrName.space, attrName.local, v);
         else
@@ -120,8 +120,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
         final Element el = group[j];
         if (el == null) continue;
         attrBindings.forEach((String name, BoundStringFunc<VT> value) {
-          final String v =
-              value(new BoundElement<VT>(el, data[j], labels[j], j));
+          final String v = value(new BoundItem<VT>(el, data[j], labels[j], j));
           final Namespaced attrName = attrSpaces[name];
           if (attrName.hasSpace)
             el.setAttributeNS(attrName.space, attrName.local, v);
@@ -133,7 +132,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
     return this;
   }
 
-  BoundSelection<VT> styleBound(String name, String value(BoundElement<VT> b),
+  BoundSelection<VT> styleBound(String name, String value(BoundItem<VT> b),
       [String priority]) {
     for (int i = 0; i < groups.length; i++) {
       final List<Element> group = groups[i];
@@ -141,7 +140,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
         final Element el = group[j];
         if (el == null) continue;
         el.style.setProperty(name,
-            value(new BoundElement<VT>(el, data[j], labels[j], j)), priority);
+            value(new BoundItem<VT>(el, data[j], labels[j], j)), priority);
       }
     }
     return this;
@@ -155,16 +154,14 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
         final Element el = group[j];
         if (el == null) continue;
         styleBindings.forEach((String name, BoundStringFunc<VT> value) =>
-            el.style.setProperty(
-                name,
-                value(new BoundElement<VT>(el, data[j], labels[j], j)),
-                priority));
+            el.style.setProperty(name,
+                value(new BoundItem<VT>(el, data[j], labels[j], j)), priority));
       }
     }
     return this;
   }
 
-  BoundSelection<VT> textBound(dynamic value(BoundElement<VT> b),
+  BoundSelection<VT> textBound(dynamic value(BoundItem<VT> b),
       [String priority]) {
     for (int i = 0; i < groups.length; i++) {
       final List<Element> group = groups[i];
@@ -172,7 +169,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
         final Element el = group[j];
         if (el == null) continue;
         el.text =
-            value(new BoundElement<VT>(el, data[j], labels[j], j)).toString();
+            value(new BoundItem<VT>(el, data[j], labels[j], j)).toString();
       }
     }
     return this;
@@ -258,7 +255,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
         binding);
   }
 
-  BoundSelection<VT> appendBound(Element creator(BoundElement<VT> b)) {
+  BoundSelection<VT> appendBound(Element creator(BoundItem<VT> b)) {
     final newGroup = new List<List<Element>>.filled(groups.length, null);
     for (int i = 0; i < groups.length; i++) {
       final List<Element> group = groups[i];
@@ -266,7 +263,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
         if (el == null) continue;
-        final newEl = creator(new BoundElement(null, data[j], labels[j], j));
+        final newEl = creator(new BoundItem(null, data[j], labels[j], j));
         newEl.dataset['vizzie-label'] = labels[i];
         el.append(newEl);
         newGroup[i][j] = newEl;
@@ -319,4 +316,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
   BoundSelection<VT> update() => binding.update();
 
   BoundSelection<VT> merge() => binding.merge();
+
+  BoundTransition<VT> transition(String name) =>
+      new BoundTransition<VT>(this, name);
 }
