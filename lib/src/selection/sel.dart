@@ -1,16 +1,24 @@
 part of grizzly.vizdom.selection;
 
-Element _createElement(String tag) {
-  final Namespaced name = Namespaced.parse(tag);
+Element _createElement(Element parent, String tag) {
+  final NameSpaced name = NameSpaced.parse(tag);
 
-  if (!name.hasSpace) return new Element.tag(tag);
+  if (!name.hasSpace) {
+    final doc = parent.ownerDocument;
+    final String uri = parent.namespaceUri;
+    if (uri == NameSpaced.nameXHTML &&
+        doc.documentElement.namespaceUri == NameSpaced.nameXHTML) {
+      return doc.createElement(tag);
+    }
+    return document.createElementNS(uri, tag);
+  }
 
-  return document.createElementNS(name.space, name.local);
+  return parent.ownerDocument.createElementNS(name.space, name.local);
 }
 
 abstract class SelectedMixin implements Selected {
   Selected attr(String name, String value) {
-    final Namespaced attrName = Namespaced.parse(name);
+    final NameSpaced attrName = NameSpaced.parse(name);
     allElements.forEach((Element e) {
       if (attrName.hasSpace)
         e.setAttributeNS(attrName.space, attrName.local, value);
@@ -21,14 +29,14 @@ abstract class SelectedMixin implements Selected {
   }
 
   Selected attrs(Map<String, String> attrMap) {
-    final attrSpaces = <String, Namespaced>{};
+    final attrSpaces = <String, NameSpaced>{};
     attrMap.forEach((String n, _) {
-      final Namespaced attrName = Namespaced.parse(n);
+      final NameSpaced attrName = NameSpaced.parse(n);
       attrSpaces[n] = attrName;
     });
     allElements
         .forEach((Element e) => attrMap.forEach((String name, String value) {
-              final Namespaced attrName = attrSpaces[name];
+              final NameSpaced attrName = attrSpaces[name];
               if (attrName.hasSpace)
                 e.setAttributeNS(attrName.space, attrName.local, value);
               else
@@ -195,7 +203,7 @@ class Selection extends Object with SelectedMixin implements Selected {
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
         if (el == null) continue;
-        final Element newEl = _createElement(tag);
+        final Element newEl = _createElement(el, tag);
         el.append(newEl);
         newGroup[i][j] = newEl;
       }
@@ -212,7 +220,7 @@ class Selection extends Object with SelectedMixin implements Selected {
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
         if (el == null) continue;
-        final Element newEl = _createElement(tag);
+        final Element newEl = _createElement(el, tag);
         final Element beforeEl = before(j, el, i);
         el.insertBefore(newEl, beforeEl);
         newGroup[i][j] = newEl;
@@ -229,6 +237,14 @@ class Selection extends Object with SelectedMixin implements Selected {
   Selection order() => super.order();
 
   Transition transition(String name) => new Transition(this, name);
+
+  vEl.AsElement asElement() => new vEl.AsElement(this);
+
+  vEl.CircleElement asCircle() => new vEl.CircleElement(this);
+
+  vEl.TextElement asText() => new vEl.TextElement(this);
+
+  vEl.LineElement asLine() => new vEl.LineElement(this);
 }
 
 class SelectionItem {

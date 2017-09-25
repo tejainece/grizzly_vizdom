@@ -3,6 +3,7 @@ library grizzly.vizdom.selection;
 import 'dart:html';
 import 'dart:collection';
 
+import '../elements/elements.dart' as vEl;
 import '../namespace/namespace.dart';
 import '../transition/transition.dart';
 
@@ -70,9 +71,7 @@ abstract class Selected {
   Selected append(String tag);
 
   Selected insert(
-      String tag,
-      Element before(
-          int index, Element parent, int groupIndex));
+      String tag, Element before(int index, Element parent, int groupIndex));
 
   Selected remove();
 
@@ -80,7 +79,15 @@ abstract class Selected {
 
   //TODO Selected replace();  //TODO: must take a function
 
-  //TODO Transition transition(String name);
+  TransitionBase transition(String name);
+
+  vEl.AsElement asElement();
+
+  vEl.CircleElement asCircle();
+
+  vEl.TextElement asText();
+
+  vEl.LineElement asLine();
 }
 
 abstract class Bindable {

@@ -91,10 +91,10 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
   BoundSelection<VT> text(textContent) => super.text(textContent);
 
   BoundSelection<VT> attrBound(String name, String value(BoundItem<VT> b)) {
-    final Namespaced attrName = Namespaced.parse(name);
+    final NameSpaced attrName = NameSpaced.parse(name);
 
     for (int i = 0; i < groups.length; i++) {
-      final List<Element> group = groups[i];
+      final UnmodifiableListView<Element> group = groups[i];
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
         if (el == null) continue;
@@ -109,19 +109,44 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
   }
 
   BoundSelection<VT> attrsBound(Map<String, BoundStringFunc<VT>> attrBindings) {
-    final attrSpaces = <String, Namespaced>{};
+    final attrSpaces = <String, NameSpaced>{};
     attrBindings.forEach((String n, _) {
-      final Namespaced attrName = Namespaced.parse(n);
+      final NameSpaced attrName = NameSpaced.parse(n);
       attrSpaces[n] = attrName;
     });
     for (int i = 0; i < groups.length; i++) {
-      final List<Element> group = groups[i];
+      final UnmodifiableListView<Element> group = groups[i];
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
         if (el == null) continue;
         attrBindings.forEach((String name, BoundStringFunc<VT> value) {
           final String v = value(new BoundItem<VT>(el, data[j], labels[j], j));
-          final Namespaced attrName = attrSpaces[name];
+          final NameSpaced attrName = attrSpaces[name];
+          if (attrName.hasSpace)
+            el.setAttributeNS(attrName.space, attrName.local, v);
+          else
+            el.setAttribute(attrName.local, v);
+        });
+      }
+    }
+    return this;
+  }
+
+  BoundSelection<VT> attrsMapBound(Map<String, String> map(BoundItem<VT> b)) {
+    final attrSpaces = <String, NameSpaced>{};
+    for (int i = 0; i < groups.length; i++) {
+      final UnmodifiableListView<Element> group = groups[i];
+      for (int j = 0; j < group.length; j++) {
+        final Element el = group[j];
+        if (el == null) continue;
+        final attrs = map(new BoundItem<VT>(el, data[j], labels[j], j));
+        attrs.forEach((String name, String v) {
+          NameSpaced attrName = attrSpaces[name];
+          if(attrName == null) {
+            attrName = NameSpaced.parse(name);
+            attrSpaces[name] = attrName;
+          }
+
           if (attrName.hasSpace)
             el.setAttributeNS(attrName.space, attrName.local, v);
           else
@@ -135,7 +160,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
   BoundSelection<VT> styleBound(String name, String value(BoundItem<VT> b),
       [String priority]) {
     for (int i = 0; i < groups.length; i++) {
-      final List<Element> group = groups[i];
+      final UnmodifiableListView<Element> group = groups[i];
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
         if (el == null) continue;
@@ -149,7 +174,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
   BoundSelection<VT> stylesBound(Map<String, BoundStringFunc<VT>> styleBindings,
       [String priority]) {
     for (int i = 0; i < groups.length; i++) {
-      final List<Element> group = groups[i];
+      final UnmodifiableListView<Element> group = groups[i];
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
         if (el == null) continue;
@@ -161,10 +186,9 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
     return this;
   }
 
-  BoundSelection<VT> textBound(dynamic value(BoundItem<VT> b),
-      [String priority]) {
+  BoundSelection<VT> textBound(dynamic value(BoundItem<VT> b)) {
     for (int i = 0; i < groups.length; i++) {
-      final List<Element> group = groups[i];
+      final UnmodifiableListView<Element> group = groups[i];
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
         if (el == null) continue;
@@ -178,7 +202,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
   BoundSelection<VT> select(String select) {
     final newGroup = new List<List<Element>>.filled(groups.length, null);
     for (int i = 0; i < groups.length; i++) {
-      final List<Element> group = groups[i];
+      final UnmodifiableListView<Element> group = groups[i];
       newGroup[i] = new List<Element>.filled(group.length, null);
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
@@ -241,7 +265,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
         if (el == null) continue;
-        final Element newEl = _createElement(tag);
+        final Element newEl = _createElement(el, tag);
         newEl.dataset['vizzie-label'] = labels[i];
         el.append(newEl);
         newGroup[i][j] = newEl;
@@ -286,7 +310,7 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
       for (int j = 0; j < group.length; j++) {
         final Element el = group[j];
         if (el == null) continue;
-        final Element newEl = _createElement(tag);
+        final Element newEl = _createElement(el, tag);
         final Element beforeEl = before(j, el, i);
         el.insertBefore(newEl, beforeEl);
         newGroup[i][j] = newEl;
@@ -319,4 +343,12 @@ class BoundSelection<VT> extends Object with SelectedMixin implements Selected {
 
   BoundTransition<VT> transition(String name) =>
       new BoundTransition<VT>(this, name);
+
+  vEl.AsBoundElement<VT> asElement() => new vEl.AsBoundElement<VT>(this);
+
+  vEl.CircleElementBound<VT> asCircle() => new vEl.CircleElementBound<VT>(this);
+
+  vEl.TextElementBound<VT> asText() => new vEl.TextElementBound<VT>(this);
+
+  vEl.LineElementBound<VT> asLine() => new vEl.LineElementBound<VT>(this);
 }

@@ -161,7 +161,7 @@ class Binding<VT> {
         final EnterNode el = group[j];
         if (el == null) continue;
 
-        final Element newEl = _createElement(tag);
+        final Element newEl = _createElement(el.parent, tag);
         newEl.dataset['vizzie-label'] = labels[j];
         el.append(newEl);
         _entered[i][j] = newEl;

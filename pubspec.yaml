@@ -10,6 +10,10 @@ environment:
 
 dependencies:
   animation_builder: ^0.0.5
+  grizzly_viz_scales:
+    path: ../grizzly_viz_scales
+  grizzly_viz_shape:
+    path: ../grizzly_viz_shape
 
 dev_dependencies:
   browser: ^0.10.0

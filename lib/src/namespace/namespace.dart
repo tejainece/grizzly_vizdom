@@ -1,14 +1,6 @@
 library grizzly.vizdom.namespace;
 
-/*
-export default function(name) {
-  var prefix = name += "", i = prefix.indexOf(":");
-  if (i >= 0 && (prefix = name.slice(0, i)) !== "xmlns") name = name.slice(i + 1);
-  return namespaces.hasOwnProperty(prefix) ? {space: namespaces[prefix], local: name} : name;
-}
-*/
-
-class Namespaced {
+class NameSpaced {
   final String namespace;
 
   final String local;
@@ -17,9 +9,9 @@ class Namespaced {
 
   String get space => namespace != null ? namespaces[namespace] : null;
 
-  Namespaced(this.namespace, this.local);
+  NameSpaced(this.namespace, this.local);
 
-  Namespaced.noSpace(this.local) : namespace = null;
+  NameSpaced.noSpace(this.local) : namespace = null;
 
   static const Map<String, String> namespaces = const <String, String>{
     'svg': 'http://www.w3.org/2000/svg',
@@ -29,12 +21,16 @@ class Namespaced {
     'xmlns': 'http://www.w3.org/2000/xmlns/'
   };
 
-  static Namespaced parse(String name) {
+  static String nameSVG = 'svg';
+
+  static String nameXHTML = 'xhtml';
+
+  static NameSpaced parse(String name) {
     final List<String> parts = name.split(':');
 
     if (parts.length == 1 || parts.first == 'xmlns')
-      return new Namespaced.noSpace(name);
+      return new NameSpaced.noSpace(name);
 
-    return new Namespaced(parts.first, parts.sublist(1).join(':'));
+    return new NameSpaced(parts.first, parts.sublist(1).join(':'));
   }
 }
